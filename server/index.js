@@ -82,6 +82,16 @@ app.get('/api/session', authenticate(), (req, res) => {
   res.json({ user: req.user || null });
 });
 
+/* frontend config badge (login.html reads this to show the backend mode) */
+app.get('/api/config', (req, res) => {
+  res.json({
+    mode: 'express',
+    name: 'Dogesh.com',
+    api: '/api',
+    breeds: tables.breeds.count.get().n,
+  });
+});
+
 /* ---------------- static frontend ---------------- */
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 app.use(express.static(PUBLIC_DIR, { extensions: ['html'], maxAge: '5m' }));

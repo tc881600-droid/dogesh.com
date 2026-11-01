@@ -761,9 +761,9 @@
             setButtonLoading(submitButton, "CREATING...");
 
             try {
-                const { user } = await api("/auth/register", {
+                const { user } = await api("/auth/signup", {
                     method: "POST",
-                    body: JSON.stringify({ fullName: name, email, password })
+                    body: JSON.stringify({ name, email, password })
                 });
                 resetButton(submitButton);
                 showStatus("signUpStatus", "ACCOUNT CREATED SUCCESSFULLY", "success");
@@ -791,16 +791,12 @@
             setButtonLoading(submitButton, "SENDING...");
 
             try {
-                const { delivered } = await api("/auth/forgot-password", {
+                await api("/auth/forgot-password", {
                     method: "POST",
                     body: JSON.stringify({ email })
                 });
                 resetButton(submitButton);
-                if (delivered) {
-                    showStatus("forgotStatus", "RESET LINK SENT. CHECK YOUR EMAIL.", "success");
-                } else {
-                    switchState("verifyState");
-                }
+                switchState("verifyState");
             } catch (error) {
                 resetButton(submitButton);
                 showStatus("forgotStatus", friendlyAuthError(error), "error");
