@@ -1,0 +1,841 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dogesh.com — Authentication</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background-color: #FFFDF5;
+        }
+
+        .halftone {
+            background-image: radial-gradient(#000 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+        }
+
+        .grid-pattern {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+        }
+
+        .btn-press {
+            transition: all 0.1s ease-out;
+        }
+
+        .btn-press:active {
+            transform: translate(4px, 4px);
+            box-shadow: none !important;
+        }
+
+        .card-lift {
+            transition: all 0.2s ease-out;
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 16px 16px 0px 0px #000;
+        }
+
+        .text-stroke {
+            -webkit-text-stroke: 3px #000;
+            color: transparent;
+        }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 10s linear infinite;
+        }
+
+        @keyframes bounce-custom {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-bounce-custom {
+            animation: bounce-custom 2s ease-in-out infinite;
+        }
+
+        input:focus {
+            background-color: #FFD93D !important;
+            box-shadow: 4px 4px 0px 0px #000 !important;
+            outline: none !important;
+        }
+
+        .status-message {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-state {
+            display: none;
+            animation: fadeSlide 0.3s ease-out;
+        }
+
+        .form-state.active {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FFFDF5;
+            border-left: 4px solid #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #FF6B6B;
+            border: 2px solid #000;
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+
+    <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 relative">
+
+        <!-- LEFT SIDE -->
+        <div class="relative bg-[#C4B5FD] p-8 md:p-12 lg:p-16 border-b-8 lg:border-b-0 lg:border-r-8 border-black overflow-hidden flex items-center">
+
+            <div class="absolute inset-0 grid-pattern opacity-50"></div>
+
+            <div class="absolute top-10 right-10 w-24 h-24 bg-[#FF6B6B] rounded-full border-4 border-black shadow-[8px_8px_0px_0px_#000] animate-bounce-custom"></div>
+            <div class="absolute bottom-20 left-8 w-32 h-32 bg-[#FFD93D] border-4 border-black shadow-[12px_12px_0px_0px_#000] rotate-12"></div>
+            <div class="absolute top-1/2 right-1/4 w-16 h-16 bg-white border-4 border-black shadow-[6px_6px_0px_0px_#000] -rotate-45"></div>
+
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[160px] md:text-[230px] font-black text-black/5 uppercase tracking-tighter -rotate-12 pointer-events-none select-none">
+                DOGESH.COM
+            </div>
+
+            <div class="absolute top-20 left-20 z-20">
+                <div class="bg-black text-white border-4 border-black px-6 py-3 rounded-full shadow-[6px_6px_0px_0px_#FF6B6B] -rotate-12 flex items-center gap-2">
+                    <i data-lucide="star" class="w-5 h-5 fill-[#FFD93D] stroke-[#FFD93D] stroke-[3px]"></i>
+                    <span class="font-black uppercase tracking-wider text-sm">WERTY</span>
+                </div>
+            </div>
+
+            <div class="relative z-10 w-full">
+
+                <div class="flex items-center gap-3 mb-10">
+                    <div class="w-12 h-12 bg-black border-4 border-black flex items-center justify-center">
+                        <i data-lucide="sparkles" class="w-6 h-6 stroke-[#FFD93D] stroke-[3px]"></i>
+                    </div>
+                    <span class="text-2xl font-black uppercase tracking-wider">DOGESH.COM</span>
+                </div>
+
+                <div class="mb-8">
+                    <h1 class="text-7xl sm:text-8xl md:text-9xl font-black uppercase tracking-tighter leading-none mb-4">
+                        <span class="block">ENTER</span>
+                        <span class="block text-stroke">THE</span>
+                        <span class="block text-[#FF6B6B]">DOGESH WORLD</span>
+                    </h1>
+                </div>
+
+                <div class="mb-10 -rotate-2">
+                    <div class="bg-black text-white border-4 border-black px-6 py-4 inline-block shadow-[8px_8px_0px_0px_#FFD93D]">
+                        <p class="text-xl md:text-2xl font-bold uppercase tracking-wide">
+                            ALMOST THERE.<br>
+                            YOUR CREDENTIALS.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 bg-white border-4 border-black px-6 py-4 shadow-[6px_6px_0px_0px_#000] rotate-1">
+                        <i data-lucide="shield" class="w-8 h-8 stroke-[#FF6B6B] stroke-[4px]"></i>
+                        <span class="text-lg font-bold uppercase tracking-wide">SECURE ACCESS</span>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-white border-4 border-black px-6 py-4 shadow-[6px_6px_0px_0px_#000] -rotate-1">
+                        <i data-lucide="zap" class="w-8 h-8 stroke-[#FFD93D] stroke-[4px]"></i>
+                        <span class="text-lg font-bold uppercase tracking-wide">SERVER-SIDE JWT AUTH</span>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-white border-4 border-black px-6 py-4 shadow-[6px_6px_0px_0px_#000] rotate-2">
+                        <i data-lucide="sparkles" class="w-8 h-8 stroke-[#C4B5FD] stroke-[4px]"></i>
+                        <span class="text-lg font-bold uppercase tracking-wide">JOIN THE EXPERIENCE</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="relative bg-[#FFFDF5] p-8 md:p-12 lg:p-16 flex items-center justify-center halftone">
+
+            <div class="absolute top-10 left-10 w-20 h-20 bg-[#FFD93D] rounded-full border-4 border-black shadow-[8px_8px_0px_0px_#000] animate-spin-slow"></div>
+            <div class="absolute bottom-20 right-10 w-28 h-28 bg-[#FF6B6B] border-4 border-black shadow-[12px_12px_0px_0px_#000] rotate-45"></div>
+
+            <div class="absolute top-20 right-20 z-20">
+                <div class="bg-[#FFD93D] border-4 border-black rounded-full w-24 h-24 flex items-center justify-center shadow-[8px_8px_0px_0px_#000] rotate-12 animate-bounce-custom">
+                    <span class="text-xl font-black uppercase">100%</span>
+                </div>
+            </div>
+
+            <div class="w-full max-w-lg relative z-10">
+
+                <div class="bg-white border-8 border-black shadow-[12px_12px_0px_0px_#000] p-8 md:p-10 relative card-lift">
+
+                    <div class="absolute top-4 right-4 w-8 h-8 bg-[#FF6B6B] rounded-full border-4 border-black"></div>
+                    <div class="absolute bottom-4 left-4 w-8 h-8 bg-[#FFD93D] border-4 border-black"></div>
+
+                    <!-- SIGN IN -->
+                    <div id="signInState" class="form-state active">
+
+                        <div class="mb-8">
+                            <div class="inline-block bg-black text-white px-4 py-2 mb-4 border-4 border-black shadow-[4px_4px_0px_0px_#FF6B6B] -rotate-2">
+                                <span class="text-xs font-black uppercase tracking-widest">ACCESS</span>
+                            </div>
+
+                            <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4">
+                                WELCOME<br>
+                                <span class="text-[#FF6B6B]">BACK</span>
+                            </h2>
+
+                            <p class="text-lg font-bold uppercase tracking-wide text-black/60">
+                                ALMOST THERE. YOUR CREDENTIALS.
+                            </p>
+                        </div>
+
+                        <form id="signInForm" class="space-y-6">
+
+                            <div>
+                                <label class="block text-sm font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <i data-lucide="mail" class="w-5 h-5 stroke-[3px]"></i>
+                                    EMAIL ADDRESS
+                                </label>
+                                <input
+                                    type="email"
+                                    id="signInEmail"
+                                    required
+                                    placeholder="YOUR@EMAIL.COM"
+                                    class="w-full h-16 px-6 bg-white border-4 border-black text-xl font-bold lowercase placeholder:text-black/30 transition-all"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <i data-lucide="lock" class="w-5 h-5 stroke-[3px]"></i>
+                                    PASSWORD
+                                </label>
+                                <input
+                                    type="password"
+                                    id="signInPassword"
+                                    required
+                                    placeholder="••••••••••"
+                                    class="w-full h-16 px-6 bg-white border-4 border-black text-xl font-bold placeholder:text-black/30 transition-all"
+                                />
+                            </div>
+
+                            <div class="flex items-center justify-between flex-wrap gap-3">
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" id="rememberMe" class="w-6 h-6 border-4 border-black accent-[#FF6B6B]">
+                                    <span class="text-sm font-bold uppercase tracking-wide">REMEMBER ME</span>
+                                </label>
+
+                                <button
+                                    type="button"
+                                    onclick="switchState('forgotState')"
+                                    class="text-sm font-black uppercase tracking-wide text-[#FF6B6B] hover:bg-[#FFD93D] hover:px-2 hover:border-2 hover:border-black transition-all"
+                                >
+                                    FORGOT PASSWORD?
+                                </button>
+                            </div>
+
+                            <div id="signInStatus" class="hidden"></div>
+
+                            <button
+                                type="submit"
+                                id="signInBtn"
+                                data-loading-button
+                                class="btn-press w-full h-16 bg-[#FF6B6B] text-white border-4 border-black shadow-[8px_8px_0px_0px_#000] text-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#FF5555] transition-colors"
+                            >
+                                <i data-lucide="log-in" class="w-6 h-6 stroke-[3px]"></i>
+                                <span>SIGN IN</span>
+                            </button>
+                        </form>
+
+                        <div class="my-8 border-t-4 border-black"></div>
+
+                        <div class="text-center">
+                            <p class="text-sm font-bold uppercase tracking-wider mb-4">NEW HERE?</p>
+                            <button
+                                type="button"
+                                onclick="switchState('signUpState')"
+                                class="btn-press bg-[#FFD93D] border-4 border-black px-8 py-3 shadow-[4px_4px_0px_0px_#000] font-black uppercase tracking-wide text-sm hover:bg-[#FFC700] transition-colors"
+                            >
+                                CREATE ACCOUNT →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SIGN UP -->
+                    <div id="signUpState" class="form-state">
+
+                        <div class="mb-8">
+                            <div class="inline-block bg-black text-white px-4 py-2 mb-4 border-4 border-black shadow-[4px_4px_0px_0px_#C4B5FD] -rotate-2">
+                                <span class="text-xs font-black uppercase tracking-widest">JOIN</span>
+                            </div>
+
+                            <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4">
+                                CREATE<br>
+                                <span class="text-[#C4B5FD]">ACCOUNT</span>
+                            </h2>
+
+                            <p class="text-lg font-bold uppercase tracking-wide text-black/60">
+                                JOIN THE EXPERIENCE.
+                            </p>
+                        </div>
+
+                        <form id="signUpForm" class="space-y-6">
+
+                            <div>
+                                <label class="block text-sm font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <i data-lucide="user" class="w-5 h-5 stroke-[3px]"></i>
+                                    FULL NAME
+                                </label>
+                                <input
+                                    type="text"
+                                    id="signUpName"
+                                    required
+                                    placeholder="YOUR NAME"
+                                    class="w-full h-16 px-6 bg-white border-4 border-black text-xl font-bold uppercase tracking-wide placeholder:text-black/30 transition-all"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <i data-lucide="mail" class="w-5 h-5 stroke-[3px]"></i>
+                                    EMAIL ADDRESS
+                                </label>
+                                <input
+                                    type="email"
+                                    id="signUpEmail"
+                                    required
+                                    placeholder="YOUR@EMAIL.COM"
+                                    class="w-full h-16 px-6 bg-white border-4 border-black text-xl font-bold lowercase placeholder:text-black/30 transition-all"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <i data-lucide="lock" class="w-5 h-5 stroke-[3px]"></i>
+                                    PASSWORD
+                                </label>
+                                <input
+                                    type="password"
+                                    id="signUpPassword"
+                                    required
+                                    minlength="8"
+                                    placeholder="••••••••••"
+                                    class="w-full h-16 px-6 bg-white border-4 border-black text-xl font-bold placeholder:text-black/30 transition-all"
+                                />
+                                <p class="text-xs font-bold uppercase tracking-wider text-black/50 mt-2">
+                                    MIN 8 CHARACTERS.
+                                </p>
+                            </div>
+
+                            <div id="signUpStatus" class="hidden"></div>
+
+                            <button
+                                type="submit"
+                                id="signUpBtn"
+                                data-loading-button
+                                class="btn-press w-full h-16 bg-[#C4B5FD] text-black border-4 border-black shadow-[8px_8px_0px_0px_#000] text-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#B4A5ED] transition-colors"
+                            >
+                                <i data-lucide="user-plus" class="w-6 h-6 stroke-[3px]"></i>
+                                <span>CREATE ACCOUNT</span>
+                            </button>
+                        </form>
+
+                        <div class="my-8 border-t-4 border-black"></div>
+
+                        <div class="text-center">
+                            <p class="text-sm font-bold uppercase tracking-wider mb-4">ALREADY HAVE AN ACCOUNT?</p>
+                            <button
+                                type="button"
+                                onclick="switchState('signInState')"
+                                class="btn-press bg-[#FFD93D] border-4 border-black px-8 py-3 shadow-[4px_4px_0px_0px_#000] font-black uppercase tracking-wide text-sm hover:bg-[#FFC700] transition-colors"
+                            >
+                                SIGN IN →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FORGOT PASSWORD -->
+                    <div id="forgotState" class="form-state">
+
+                        <div class="mb-8">
+                            <div class="inline-block bg-black text-white px-4 py-2 mb-4 border-4 border-black shadow-[4px_4px_0px_0px_#FFD93D] -rotate-2">
+                                <span class="text-xs font-black uppercase tracking-widest">RESET</span>
+                            </div>
+
+                            <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4">
+                                FORGOT<br>
+                                <span class="text-[#FFD93D]">PASSWORD</span>
+                            </h2>
+
+                            <p class="text-lg font-bold uppercase tracking-wide text-black/60">
+                                ENTER YOUR EMAIL. WE WILL SEND A RESET LINK.
+                            </p>
+                        </div>
+
+                        <form id="forgotForm" class="space-y-6">
+
+                            <div>
+                                <label class="block text-sm font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <i data-lucide="mail" class="w-5 h-5 stroke-[3px]"></i>
+                                    EMAIL ADDRESS
+                                </label>
+                                <input
+                                    type="email"
+                                    id="forgotEmail"
+                                    required
+                                    placeholder="YOUR@EMAIL.COM"
+                                    class="w-full h-16 px-6 bg-white border-4 border-black text-xl font-bold lowercase placeholder:text-black/30 transition-all"
+                                />
+                            </div>
+
+                            <div id="forgotStatus" class="hidden"></div>
+
+                            <button
+                                type="submit"
+                                id="forgotBtn"
+                                data-loading-button
+                                class="btn-press w-full h-16 bg-[#FFD93D] text-black border-4 border-black shadow-[8px_8px_0px_0px_#000] text-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#FFC700] transition-colors"
+                            >
+                                <i data-lucide="send" class="w-6 h-6 stroke-[3px]"></i>
+                                <span>SEND RESET LINK</span>
+                            </button>
+                        </form>
+
+                        <div class="my-8 border-t-4 border-black"></div>
+
+                        <div class="text-center">
+                            <button
+                                type="button"
+                                onclick="switchState('signInState')"
+                                class="btn-press bg-white border-4 border-black px-8 py-3 shadow-[4px_4px_0px_0px_#000] font-black uppercase tracking-wide text-sm hover:bg-[#FFD93D] transition-colors"
+                            >
+                                ← BACK TO SIGN IN
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- VERIFY EMAIL -->
+                    <div id="verifyState" class="form-state">
+
+                        <div class="text-center mb-8">
+                            <div class="w-28 h-28 bg-[#FFD93D] rounded-full border-4 border-black mx-auto mb-6 flex items-center justify-center shadow-[8px_8px_0px_0px_#000] animate-bounce-custom">
+                                <i data-lucide="mail" class="w-14 h-14 stroke-black stroke-[3px]"></i>
+                            </div>
+
+                            <div class="inline-block bg-black text-white px-4 py-2 mb-4 border-4 border-black shadow-[4px_4px_0px_0px_#FFD93D] -rotate-2">
+                                <span class="text-xs font-black uppercase tracking-widest">ALMOST READY</span>
+                            </div>
+
+                            <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4">
+                                CHECK<br>
+                                <span class="text-[#FFD93D]">EMAIL</span>
+                            </h2>
+
+                            <p class="text-lg font-bold uppercase tracking-wide text-black/60">
+                                CHECK YOUR EMAIL TO VERIFY.
+                            </p>
+                        </div>
+
+                        <div class="bg-[#C4B5FD] border-4 border-black p-5 mb-6 shadow-[6px_6px_0px_0px_#000] -rotate-1">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="info" class="w-6 h-6 stroke-[3px] flex-shrink-0 mt-1"></i>
+                                <p class="text-sm font-bold uppercase tracking-wide">
+                                    WE SENT A VERIFICATION LINK. CLICK IT TO ACTIVATE YOUR ACCOUNT.
+                                </p>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="switchState('signInState')"
+                            class="btn-press w-full h-16 bg-black text-white border-4 border-black shadow-[8px_8px_0px_0px_#FF6B6B] text-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#333] transition-colors"
+                        >
+                            <i data-lucide="arrow-left" class="w-6 h-6 stroke-[3px]"></i>
+                            <span>BACK TO SIGN IN</span>
+                        </button>
+                    </div>
+
+                    <!-- LOGGED IN -->
+                    <div id="loggedInState" class="form-state">
+
+                        <div class="text-center mb-8">
+                            <div class="w-28 h-28 bg-[#FF6B6B] rounded-full border-4 border-black mx-auto mb-6 flex items-center justify-center shadow-[8px_8px_0px_0px_#000] animate-bounce-custom">
+                                <i data-lucide="check" class="w-14 h-14 stroke-white stroke-[4px]"></i>
+                            </div>
+
+                            <div class="inline-block bg-black text-white px-4 py-2 mb-4 border-4 border-black shadow-[4px_4px_0px_0px_#FFD93D] -rotate-2">
+                                <span class="text-xs font-black uppercase tracking-widest">AUTHENTICATED</span>
+                            </div>
+
+                            <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4">
+                                ACCESS<br>
+                                <span class="text-[#FF6B6B]">GRANTED</span>
+                            </h2>
+
+                            <p class="text-lg font-bold uppercase tracking-wide text-black/60">
+                                YOU ARE LOGGED IN.
+                            </p>
+                        </div>
+
+                        <div class="bg-white border-4 border-black p-5 mb-6 shadow-[6px_6px_0px_0px_#000]">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-black/60 mb-1">CURRENT USER</p>
+                            <p id="loggedInEmail" class="text-lg font-black lowercase"></p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="signOutBtn"
+                            data-loading-button
+                            class="btn-press w-full h-16 bg-black text-white border-4 border-black shadow-[8px_8px_0px_0px_#FF6B6B] text-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#333] transition-colors"
+                        >
+                            <i data-lucide="log-out" class="w-6 h-6 stroke-[3px]"></i>
+                            <span>SIGN OUT</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="mt-8 text-center">
+                    <div class="inline-block bg-black text-white border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_#FFD93D] -rotate-2">
+                        <p class="text-xs font-bold uppercase tracking-widest">
+                            🔒 DOGESH.COM • SECURE AUTHENTICATION
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================================
+        // DOGESH.COM — FULL-STACK AUTH (server-side, JWT cookie)
+        // No third-party auth SDK: everything hits our own Express API.
+        // ==========================================================
+        const API = "/api";
+
+        function notifyParent(type, payload = {}) {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ source: "dogesh-auth", type, ...payload }, "*");
+            }
+        }
+
+        async function api(path, opts = {}) {
+            const res = await fetch(API + path, {
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                ...opts
+            });
+            let json = {};
+            try { json = await res.json(); } catch (_) {}
+            if (!res.ok) throw new Error(json.error || ("HTTP " + res.status));
+            return json;
+        }
+
+        async function loadConfig() {
+            try {
+                const cfg = await api("/config");
+                const el = document.getElementById("authModeBadge");
+                if (el) el.textContent = cfg.mode === "supabase" ? "SUPABASE BACKEND" : "EXPRESS + SQLITE";
+            } catch (_) { /* offline is fine */ }
+        }
+
+        async function refreshSession() {
+            try {
+                const { user } = await api("/auth/me");
+                if (user && user.email) showLoggedIn(user.email);
+            } catch (_) { /* logged out */ }
+        }
+
+        async function showLoggedIn(email) {
+            document.getElementById("loggedInEmail").textContent = email;
+            switchState("loggedInState");
+            notifyParent("loggedIn", { email });
+        }
+
+        window.addEventListener("message", async function (event) {
+            const message = event.data;
+            if (!message || message.source !== "dogesh-parent") return;
+            if (message.type === "refresh") refreshSession();
+            if (message.type === "logout") {
+                document.getElementById("signInForm").reset();
+                switchState("signInState");
+            }
+        });
+
+        // ==========================================================
+        // UI HELPERS
+        // ==========================================================
+        lucide.createIcons();
+
+        document.querySelectorAll("[data-loading-button]").forEach(button => {
+            button.dataset.originalHtml = button.innerHTML;
+        });
+
+        function switchState(stateId) {
+            document.querySelectorAll(".form-state").forEach(state => {
+                state.classList.remove("active");
+            });
+            document.getElementById(stateId).classList.add("active");
+            lucide.createIcons();
+        }
+
+        function showStatus(elementId, message, type) {
+            const statusDiv = document.getElementById(elementId);
+
+            const bgColor = type === "success" ? "bg-[#FFD93D]" : "bg-[#FF6B6B]";
+            const textColor = type === "success" ? "text-black" : "text-white";
+            const icon = type === "success" ? "check" : "alert-triangle";
+
+            statusDiv.className = `status-message ${bgColor} ${textColor} border-4 border-black p-4 shadow-[6px_6px_0px_0px_#000] flex items-center gap-3`;
+            statusDiv.innerHTML = `
+                <i data-lucide="${icon}" class="w-6 h-6 stroke-[3px]"></i>
+                <span class="font-black uppercase tracking-wide text-sm">${message}</span>
+            `;
+
+            statusDiv.classList.remove("hidden");
+            lucide.createIcons();
+
+            if (type === "success") {
+                setTimeout(() => {
+                    statusDiv.classList.add("hidden");
+                }, 4000);
+            }
+        }
+
+        function setButtonLoading(button, loadingText) {
+            button.disabled = true;
+            button.innerHTML = `
+                <i data-lucide="loader" class="w-6 h-6 stroke-[3px] animate-spin"></i>
+                <span>${loadingText}</span>
+            `;
+            lucide.createIcons();
+        }
+
+        function resetButton(button) {
+            button.disabled = false;
+
+            if (button.dataset.originalHtml) {
+                button.innerHTML = button.dataset.originalHtml;
+            }
+
+            lucide.createIcons();
+        }
+
+        function friendlyAuthError(error) {
+            const message = (error?.message || "").toLowerCase();
+
+            if (message.includes("invalid") || message.includes("credentials") || message.includes("password")) {
+                return "WRONG EMAIL OR PASSWORD";
+            }
+
+            if (message.includes("not confirmed") || message.includes("verify")) {
+                return "EMAIL NOT CONFIRMED. CHECK YOUR INBOX";
+            }
+
+            if (message.includes("already")) {
+                return "EMAIL ALREADY REGISTERED";
+            }
+
+            if (message.includes("at least")) {
+                return "PASSWORD TOO SHORT";
+            }
+
+            if (message.includes("rate limit")) {
+                return "TOO MANY ATTEMPTS. WAIT AND TRY AGAIN";
+            }
+
+            if (message.includes("fetch") || message.includes("failed to fetch")) {
+                return "NETWORK ERROR. IS THE SERVER RUNNING?";
+            }
+
+            return (error?.message || "AUTHENTICATION ERROR").toUpperCase();
+        }
+
+        // ==========================================================
+        // SIGN IN
+        // ==========================================================
+        document.getElementById("signInForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById("signInEmail").value.trim();
+            const password = document.getElementById("signInPassword").value;
+            const rememberMe = document.getElementById("rememberMe").checked;
+            const submitButton = document.getElementById("signInBtn");
+
+            if (!email || !password) {
+                showStatus("signInStatus", "EMAIL AND PASSWORD REQUIRED", "error");
+                return;
+            }
+
+            setButtonLoading(submitButton, "CHECKING...");
+
+            try {
+                const { user } = await api("/auth/login", {
+                    method: "POST",
+                    body: JSON.stringify({ email, password, remember: rememberMe })
+                });
+                resetButton(submitButton);
+                showStatus("signInStatus", "ACCESS GRANTED. WELCOME BACK!", "success");
+                showLoggedIn(user.email);
+            } catch (error) {
+                resetButton(submitButton);
+                showStatus("signInStatus", friendlyAuthError(error), "error");
+            }
+        });
+
+        // ==========================================================
+        // SIGN UP
+        // ==========================================================
+        document.getElementById("signUpForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById("signUpName").value.trim();
+            const email = document.getElementById("signUpEmail").value.trim();
+            const password = document.getElementById("signUpPassword").value;
+            const submitButton = document.getElementById("signUpBtn");
+
+            if (!name || !email || !password) {
+                showStatus("signUpStatus", "ALL FIELDS REQUIRED", "error");
+                return;
+            }
+
+            if (password.length < 8) {
+                showStatus("signUpStatus", "PASSWORD MUST BE AT LEAST 8 CHARACTERS", "error");
+                return;
+            }
+
+            setButtonLoading(submitButton, "CREATING...");
+
+            try {
+                const { user } = await api("/auth/register", {
+                    method: "POST",
+                    body: JSON.stringify({ fullName: name, email, password })
+                });
+                resetButton(submitButton);
+                showStatus("signUpStatus", "ACCOUNT CREATED SUCCESSFULLY", "success");
+                showLoggedIn(user.email);
+            } catch (error) {
+                resetButton(submitButton);
+                showStatus("signUpStatus", friendlyAuthError(error), "error");
+            }
+        });
+
+        // ==========================================================
+        // FORGOT PASSWORD
+        // ==========================================================
+        document.getElementById("forgotForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById("forgotEmail").value.trim();
+            const submitButton = document.getElementById("forgotBtn");
+
+            if (!email) {
+                showStatus("forgotStatus", "EMAIL REQUIRED", "error");
+                return;
+            }
+
+            setButtonLoading(submitButton, "SENDING...");
+
+            try {
+                const { delivered } = await api("/auth/forgot-password", {
+                    method: "POST",
+                    body: JSON.stringify({ email })
+                });
+                resetButton(submitButton);
+                if (delivered) {
+                    showStatus("forgotStatus", "RESET LINK SENT. CHECK YOUR EMAIL.", "success");
+                } else {
+                    switchState("verifyState");
+                }
+            } catch (error) {
+                resetButton(submitButton);
+                showStatus("forgotStatus", friendlyAuthError(error), "error");
+            }
+        });
+
+        // ==========================================================
+        // SIGN OUT
+        // ==========================================================
+        document.getElementById("signOutBtn").addEventListener("click", async function () {
+            const submitButton = document.getElementById("signOutBtn");
+
+            setButtonLoading(submitButton, "SIGNING OUT...");
+
+            try {
+                await api("/auth/logout", { method: "POST" });
+            } catch (_) { /* cookie already gone is fine */ }
+
+            resetButton(submitButton);
+
+            document.getElementById("signInForm").reset();
+            switchState("signInState");
+
+            showStatus("signInStatus", "SIGNED OUT", "success");
+            notifyParent("loggedOut");
+        });
+
+        // ==========================================================
+        // INIT
+        // ==========================================================
+        loadConfig();
+        refreshSession();
+    </script>
+
+
+
+</body>
+</html>
