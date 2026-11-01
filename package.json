@@ -1,0 +1,22 @@
+{
+  "name": "dogesh-fullstack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dogesh.com — full-stack edition (Express API + SQLite + vanilla JS frontend)",
+  "type": "commonjs",
+  "main": "server/index.js",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "seed": "node server/seed.js",
+    "test": "node tests/api.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.5.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
